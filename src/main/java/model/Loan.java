@@ -1,26 +1,44 @@
 package model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+
+@Entity
+@NamedQuery(name = Loan.GET_ALL_LOANS, query = "Select l from Loan l")
 public class Loan {
-	private String id;
+	public static final String GET_ALL_LOANS = "Loan.getAllLoans";
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "loan_seq")
+	private Long id;
+
 	private String loanDate;
 	private String returnDate;
+
+	@ManyToOne
 	private Book book;
+
+	@ManyToOne
 	private Member member;
 
-	public Loan(String id, String loanDate, String returnDate, Book book, Member member) {
-		super();
+	public Loan() {
+	}
+
+	public Loan(Long id, String loanDate, String returnDate) {
 		this.id = id;
 		this.loanDate = loanDate;
 		this.returnDate = returnDate;
-		this.book = book;
-		this.member = member;
 	}
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -56,4 +74,39 @@ public class Loan {
 		this.member = member;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((loanDate == null) ? 0 : loanDate.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Loan other = (Loan) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (loanDate == null) {
+			if (other.loanDate != null)
+				return false;
+		} else if (!loanDate.equals(other.loanDate))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Loan [id=" + id + ", loanDate=" + loanDate + ", returnDate=" + returnDate + "]";
+	}
 }

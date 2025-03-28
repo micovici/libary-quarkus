@@ -1,28 +1,43 @@
 package model;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import jakarta.persistence.*;
 
+@Entity
+@NamedQuery(name = Book.GET_BOOKS_FOR_AUTHOR, query = "SELECT b FROM Book b JOIN b.authors a WHERE a.id = :id")
 public class Book {
-	private String id;
+	public static final String GET_BOOKS_FOR_AUTHOR = "Book.getBooksForAuthor";
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_seq")
+	private Long id;
+
 	private String title;
 	private int year;
-	private List<Loan> loans;
-	private List<Author> authors;
 
-	public Book(String id, String title, int year, List<Loan> loans, List<Author> authors) {
-		super();
-		this.id = id;
-		this.title = title;
-		this.year = year;
-		this.loans = loans;
-		this.authors = authors;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "book_id")
+	private Set<Loan> loans = new HashSet<>();
+
+	@ManyToMany
+	@JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
+	private Set<Author> authors = new HashSet<>();
+
+	public Book() {
 	}
 
-	public String getId() {
+	public Book(String title, int year) {
+		this.title = title;
+		this.year = year;
+	}
+
+	// Getters & Setters
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -42,20 +57,49 @@ public class Book {
 		this.year = year;
 	}
 
-	public List<Loan> getLoans() {
+	public Set<Loan> getLoans() {
 		return loans;
 	}
 
-	public void setLoans(List<Loan> loans) {
+	public void setLoans(Set<Loan> loans) {
 		this.loans = loans;
 	}
 
-	public List<Author> getAuthors() {
+	public Set<Author> getAuthors() {
 		return authors;
 	}
 
-	public void setAuthors(List<Author> authors) {
+	public void setAuthors(Set<Author> authors) {
 		this.authors = authors;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Book other = (Book) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Book [id=" + id + ", title=" + title + ", year=" + year + "]";
+	}
 }
