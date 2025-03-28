@@ -1,6 +1,5 @@
 package model;
 
-import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,9 +20,10 @@ public class Author {
 	private String name;
 
 	@ManyToMany(mappedBy = "authors")
-	private Set<Book> books = new HashSet<>();
+	private Set<Book> books;
 
 	public Author() {
+		super();
 	}
 
 	public Author(String name) {

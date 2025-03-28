@@ -26,6 +26,7 @@ public class Loan {
 	private Member member;
 
 	public Loan() {
+		super();
 	}
 
 	public Loan(Long id, String loanDate, String returnDate) {

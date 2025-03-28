@@ -1,6 +1,5 @@
 package model;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
@@ -24,9 +23,10 @@ public class Member {
 	private String membershipNumber;
 
 	@OneToMany(mappedBy = "member")
-	private Set<Loan> loans = new HashSet<>();
+	private Set<Loan> loans;
 
 	public Member() {
+		super();
 	}
 
 	public Member(Long id, String firstName, String lastName, String membershipNumber) {
