@@ -8,9 +8,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQuery;
 
 @Entity
-@NamedQuery(name = Loan.GET_ALL_LOANS, query = "Select l from Loan l")
+@NamedQuery(name = Loan.GET_LOANS_FOR_BOOK, query = "SELECT l FROM Loan l WHERE l.book.id = :id")
 public class Loan {
-	public static final String GET_ALL_LOANS = "Loan.getAllLoans";
+	public static final String GET_LOANS_FOR_BOOK = "Loan.getLoansForBook";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "loan_seq")
@@ -22,15 +22,11 @@ public class Loan {
 	@ManyToOne
 	private Book book;
 
-	@ManyToOne
-	private Member member;
-
 	public Loan() {
 		super();
 	}
 
-	public Loan(Long id, String loanDate, String returnDate) {
-		this.id = id;
+	public Loan(String loanDate, String returnDate) {
 		this.loanDate = loanDate;
 		this.returnDate = returnDate;
 	}
@@ -65,14 +61,6 @@ public class Loan {
 
 	public void setBook(Book book) {
 		this.book = book;
-	}
-
-	public Member getMember() {
-		return member;
-	}
-
-	public void setMember(Member member) {
-		this.member = member;
 	}
 
 	@Override

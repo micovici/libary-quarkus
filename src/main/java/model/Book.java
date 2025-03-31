@@ -1,6 +1,5 @@
 package model;
 
-import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,15 +7,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import java.util.Set;
 
 @Entity
-@NamedQuery(name = Book.GET_BOOKS_FOR_AUTHOR, query = "SELECT b FROM Book b JOIN b.authors a WHERE a.id = :id")
+@NamedQuery(name = Book.GET_ALL_BOOKS, query = "SELECT b FROM Book b")
 public class Book {
-	public static final String GET_BOOKS_FOR_AUTHOR = "Book.getBooksForAuthor";
+	public static final String GET_ALL_BOOKS = "Book.getAllBooks";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_seq")
@@ -29,10 +27,6 @@ public class Book {
 	@JoinColumn(name = "book_id")
 	private Set<Loan> loans;
 
-	@ManyToMany
-	@JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
-	private Set<Author> authors;
-
 	public Book() {
 		super();
 	}
@@ -42,7 +36,6 @@ public class Book {
 		this.year = year;
 	}
 
-	// Getters & Setters
 	public Long getId() {
 		return id;
 	}
@@ -73,14 +66,6 @@ public class Book {
 
 	public void setLoans(Set<Loan> loans) {
 		this.loans = loans;
-	}
-
-	public Set<Author> getAuthors() {
-		return authors;
-	}
-
-	public void setAuthors(Set<Author> authors) {
-		this.authors = authors;
 	}
 
 	@Override
