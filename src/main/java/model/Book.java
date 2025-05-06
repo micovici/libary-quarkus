@@ -7,19 +7,24 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import model.client.BookAuthor;
+
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@NamedQuery(name = Book.GET_ALL_BOOKS, query = "SELECT b FROM Book b")
+@NamedQueries({ @NamedQuery(name = Book.GET_ALL_BOOKS, query = "SELECT b FROM Book b"),
+		@NamedQuery(name = Book.GET_BOOKS_BY_TITLE, query = "SELECT b FROM Book b WHERE b.title = :title") })
 public class Book {
 	public static final String GET_ALL_BOOKS = "Book.getAllBooks";
+	public static final String GET_BOOKS_BY_TITLE = "Book.getBooksByTitle";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_seq")
 	private Long id;
-
 	private String title;
 	private int year;
 
@@ -27,8 +32,10 @@ public class Book {
 	@JoinColumn(name = "book_id")
 	private Set<Loan> loans;
 
+	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<BookAuthor> bookAuthors = new HashSet<>();
+
 	public Book() {
-		super();
 	}
 
 	public Book(String title, int year) {
@@ -66,6 +73,14 @@ public class Book {
 
 	public void setLoans(Set<Loan> loans) {
 		this.loans = loans;
+	}
+
+	public Set<BookAuthor> getBookAuthors() {
+		return bookAuthors;
+	}
+
+	public void setBookAuthors(Set<BookAuthor> bookAuthors) {
+		this.bookAuthors = bookAuthors;
 	}
 
 	@Override
