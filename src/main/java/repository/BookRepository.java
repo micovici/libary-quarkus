@@ -86,6 +86,26 @@ public class BookRepository {
 			}
 		}
 	}
+	
+	@Transactional
+	public void saveBookFile(Long bookId, String filePath) throws BookException {
+	    Book book = em.find(Book.class, bookId);
+	    if (book == null) {
+	        throw new BookException("Knjiga nije pronađena");
+	    }
+	    book.setFilePath(filePath);
+	    em.merge(book);
+	}
+
+	public Book getBookById(Long id) throws BookException {
+	    try {
+	        return em.createNamedQuery(Book.GET_BOOK_BY_ID, Book.class)
+	                .setParameter("id", id)
+	                .getSingleResult();
+	    } catch (Exception e) {
+	        throw new BookException("Knjiga nije pronađena");
+	    }
+	}
 
 	public boolean checkHolidaysSaved(String countryCode, int expectedCount) {
 		Long count = (Long) em.createQuery("SELECT COUNT(h) FROM Holiday h WHERE h.countryCode = :code")

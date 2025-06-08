@@ -17,16 +17,19 @@ import java.util.Set;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = Book.GET_ALL_BOOKS, query = "SELECT b FROM Book b"),
-		@NamedQuery(name = Book.GET_BOOKS_BY_TITLE, query = "SELECT b FROM Book b WHERE b.title = :title") })
+		@NamedQuery(name = Book.GET_BOOKS_BY_TITLE, query = "SELECT b FROM Book b WHERE b.title = :title"),
+		@NamedQuery(name = Book.GET_BOOK_BY_ID, query = "SELECT b FROM Book b WHERE b.id = :id") })
 public class Book {
 	public static final String GET_ALL_BOOKS = "Book.getAllBooks";
 	public static final String GET_BOOKS_BY_TITLE = "Book.getBooksByTitle";
+	public static final String GET_BOOK_BY_ID = "Book.getBookById";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_seq")
 	private Long id;
 	private String title;
 	private int year;
+	private String filePath;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "book_id")
@@ -81,6 +84,14 @@ public class Book {
 
 	public void setBookAuthors(Set<BookAuthor> bookAuthors) {
 		this.bookAuthors = bookAuthors;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 	@Override
